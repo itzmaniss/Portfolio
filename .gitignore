@@ -43,5 +43,7 @@ package-lock.json
 
 design.png
 .env
-input.css
 todo.txt
+
+# public/input.css is the Tailwind SOURCE file — it must stay tracked.
+# It was previously ignored, which is how it got lost and broke build:css.

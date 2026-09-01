@@ -26,14 +26,19 @@ A modern, terminal-inspired developer portfolio built with Elysia.js, HTMX, and 
 ```
 .
 ├── public/
-│   ├── favicon.ico
-│   ├── script.js
-│   └── styles.css
-├── src/
-│   └── index.html
-├   └── index.ts
-└── tailwind.config.js
+│   ├── favicon.svg / favicon.png
+│   ├── input.css      # Tailwind SOURCE — edit this
+│   ├── styles.css     # build output — do not edit by hand
+│   └── script.js
+└── src/
+    ├── index.html
+    └── index.ts
 ```
+
+> **`public/input.css` is the stylesheet you edit.** `public/styles.css` is
+> generated from it by `bun run build:css` and any manual change there is
+> overwritten on the next build. Tailwind v4 needs no `tailwind.config.js` —
+> theme tokens live in the `@theme` block inside `input.css`.
 
 ## 📌 Getting Started
 
@@ -60,14 +65,19 @@ A modern, terminal-inspired developer portfolio built with Elysia.js, HTMX, and 
    RESEND_API_KEY=your_resend_api_key_here
    ```
 
-4. Start the development server
+4. Build the CSS (required — the server does not build it for you)
+   ```bash
+   bun run build:css
+   ```
+
+5. Start the development server
    ```bash
    bun dev
    ```
 
-5. Build for production
+   To rebuild CSS automatically while you work, run this alongside it:
    ```bash
-   bun run build
+   bun run watch:css
    ```
 
 ## 📝 Features
@@ -89,8 +99,10 @@ Allows visitors to send messages directly through the website, with server-side 
 
 ## 🔧 Customization
 
-### Tailwind Configuration
-The project uses a custom Tailwind configuration with a safelist for dynamic classes. You can modify the theme in the `tailwind.config.js` file.
+### Theme
+Colours, fonts and custom animations are defined as tokens in the `@theme`
+block of `public/input.css`. Changing `--color-accent` there re-colours the
+whole site. Rebuild with `bun run build:css` after any change.
 
 ### Adding Projects
 To add new projects, modify the projects section in `index.html` by duplicating the project box template.
@@ -104,7 +116,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgements
 
-- Design by [Rakshii](https://www.rakshiii.xyz)
+- Design by [0xshuul](https://www.rakshi.xyz)
 - Icons by [Devicon](https://devicon.dev/)
 
 ## 📞 Contact

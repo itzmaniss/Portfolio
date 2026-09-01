@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* Tailwind v4 needs to be told where classes live. index.ts returns HTML
+   strings with utility classes in them, so it gets scanned too. */
+@source "../src/**/*.{html,ts}";
+
+/* ── Design tokens ─────────────────────────────────────────────────────
+   These generate the utilities: bg-ink, text-accent, font-display, etc.
+   Emerald is the accent only — body copy is a cool gray so the accent
+   has something to be brighter than. */
+@theme {
+    --color-ink: #0b0f0e;
+    --color-ink-2: #0f1513;
+    --color-surface: #131b19;
+    --color-line: #1f2b28;
+    --color-line-bright: #2a3a36;
+
+    --color-text: #c9d5d1;
+    --color-muted: #6e827c;
+    --color-dim: #4a5a55;
+
+    --color-accent: #34d399;
+    --color-accent-bright: #4ade9f;
+    --color-accent-deep: #065f46;
+    --color-amber: #f59e0b;
+
+    /* One family, three weights. A second display face was tried and cut:
+       in all-caps it read as a generic grotesk, which is the opposite of
+       the brief. Mono at display size is the terminal identity. */
+    --font-mono:
+        "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        monospace;
+
+    /* Animations Tailwind doesn't ship. (ping, pulse and spin it does —
+       so those are used as-is from the built-ins.) */
+    --animate-blink: blink 1.1s steps(1) infinite;
+    @keyframes blink {
+        0%,
+        49% {
+            opacity: 1;
+        }
+        50%,
+        100% {
+            opacity: 0;
+        }
+    }
+
+    --animate-boot: boot-in 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    @keyframes boot-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+}
+
+/* ── Globals ───────────────────────────────────────────────────────────
+   Bare-element styling, so there's no markup to hang a utility on. */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-ink);
+        color: var(--color-text);
+        font-family: var(--font-mono);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+        background: var(--color-accent);
+        color: var(--color-ink);
+    }
+
+    /* Visible keyboard focus everywhere, no exceptions. */
+    :focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+    }
+
+    /* Section anchors clear the fixed header. */
+    section[id] {
+        scroll-margin-top: 5.5rem;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--color-ink);
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-line-bright);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent-deep);
+    }
+
+    /* Scroll reveal, gated behind .js (set inline in <head>) so that with
+       JavaScript off the content is simply visible rather than stuck at
+       opacity 0. Scoping it here also keeps six utilities off every
+       revealed element. */
+    .js [data-reveal] {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    .js [data-reveal][data-visible] {
+        opacity: 1;
+        transform: none;
+        transition:
+            opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* ── Extracted patterns ────────────────────────────────────────────────
+   Only patterns repeated enough that inlining them would invite drift.
+   Everything else lives as utilities in the markup. */
+@layer components {
+    /* Every section header is a shell prompt. As a utility this would be
+       before:content-['~/manish_$'] repeated five times — the escaping is
+       unreadable enough that a class earns its place. */
+    .cmd::before {
+        content: "~/manish $";
+        color: var(--color-accent);
+        white-space: nowrap;
+    }
+
+    /* Nav — active state is driven by the scroll spy in script.js. */
+    .nav-link {
+        @apply relative py-1.5 text-muted transition-colors duration-200 hover:text-text;
+    }
+    .nav-link[aria-current="true"] {
+        @apply text-accent;
+    }
+    .nav-link[aria-current="true"]::before {
+        content: "";
+        @apply absolute inset-x-0 -bottom-1 h-px bg-accent;
+    }
+
+    .mobile-link {
+        @apply border-b border-line py-3 text-muted transition-colors duration-200 last:border-0 hover:text-accent;
+    }
+
+    /* ×19 in the stack section. */
+    .tech-chip {
+        @apply inline-flex items-center gap-2 border border-line bg-ink-2 px-3 py-1.5 text-sm text-text transition-colors duration-200 hover:border-accent-deep hover:bg-surface hover:text-accent;
+    }
+
+    .form-label {
+        @apply mb-1.5 block text-xs uppercase tracking-[0.08em] text-muted;
+    }
+
+    .form-input {
+        @apply w-full border border-line bg-ink px-3.5 py-2.5 text-sm text-text transition-colors duration-200 placeholder:text-dim focus:border-accent focus:bg-ink-2 focus:outline-none;
+    }
+
+    /* htmx sets .htmx-request on the indicator target while in flight.
+       Kept at opacity 0 rather than display:none so the button doesn't
+       change width mid-submit. */
+    .htmx-indicator {
+        @apply inline-flex opacity-0 transition-opacity duration-200;
+    }
+    .htmx-request .htmx-indicator,
+    .htmx-request.htmx-indicator {
+        @apply opacity-100;
+    }
+}
+
+/* Quality floor: honour reduced-motion requests globally, rather than
+   hanging motion-reduce: on every animated element. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}

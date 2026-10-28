@@ -6,12 +6,16 @@ interface Props {
 }
 
 const { project } = Astro.props;
+// A case-study slug makes the card an internal link; internal links never
+// open a new tab. Everything else keeps its external behaviour.
+const href = project.caseStudy ? `/work/${project.caseStudy}/` : project.href;
+const external = !project.caseStudy;
 ---
 
 <a
-	href={project.href}
-	target="_blank"
-	rel="noopener noreferrer"
+	href={href}
+	target={external ? "_blank" : undefined}
+	rel={external ? "noopener noreferrer" : undefined}
 	class="group relative block border-t border-line px-4 py-8 transition-colors duration-300 before:absolute before:inset-y-[-1px] before:left-0 before:w-0.5 before:origin-top before:scale-y-0 before:bg-accent before:transition-transform before:duration-300 hover:bg-surface/50 hover:before:scale-y-100 sm:px-6"
 >
 	<div class="flex flex-col gap-4 md:flex-row md:items-baseline md:gap-10">

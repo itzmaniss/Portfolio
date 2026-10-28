@@ -6,11 +6,15 @@
 
 export type NavLink = { href: string; label: string };
 
+// Section links are root-absolute (/#about) so they work from the case
+// study pages too; the scroll spy in script.js only highlights them on
+// the homepage, where the sections actually exist.
 export const navLinks: NavLink[] = [
-	{ href: "#about", label: "about" },
-	{ href: "#services", label: "services" },
-	{ href: "#work", label: "work" },
-	{ href: "#stack", label: "stack" },
+	{ href: "/#about", label: "about" },
+	{ href: "/#services", label: "services" },
+	{ href: "/#work", label: "work" },
+	{ href: "/work/", label: "case studies" },
+	{ href: "/#stack", label: "stack" },
 ];
 
 export type Service = {
@@ -62,16 +66,19 @@ export type Project = {
 	href: string;
 	description: string;
 	tags: string[];
+	/** Entry id in the caseStudies collection; renders an internal link to /work/<slug>/. */
+	caseStudy?: string;
 };
 
 export const projects: Project[] = [
 	{
 		title: "MyRideSG",
-		meta: "Founding engineer · React Native · 2026",
+		meta: "Founding engineer · 2026",
 		href: "https://myridesg.com",
+		caseStudy: "myridesg",
 		description:
-			"A bike ownership app for Singapore riders. Tracks servicing history, fuel logs and running costs, counts down COE, road tax and insurance renewals, and points you at trusted workshops when it is time to act. Records stay private by default and export whenever you want them. I'm the founding engineer, building it from the ground up.",
-		tags: ["React Native", "React", "Astro"],
+			"A bike ownership app for Singapore riders. Tracks servicing history, fuel logs and running costs, counts down COE, road tax and insurance renewals, and points you at trusted workshops when it is time to act. Records stay private by default and export whenever you want them. I build the partners app and the marketing website, and consult on the rider app.",
+		tags: ["Astro", "Next.js", "Supabase"],
 	},
 	{
 		title: "DebugDuck",

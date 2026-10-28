@@ -1,3 +1,12 @@
+---
+interface Props {
+	// Buffer name shown until the scroll spy takes over on the homepage.
+	section?: string;
+}
+
+const { section = "hero" } = Astro.props;
+---
+
 <!-- tmux-style bar: session, current section (scroll-driven),
      availability, and local time. -->
 <div
@@ -11,7 +20,7 @@
 	</div>
 	<div class="flex items-center gap-2 px-3 text-muted">
 		<span class="text-subtle">buf</span>
-		<span id="status-section" class="text-text">hero</span>
+		<span id="status-section" class="text-text">{section}</span>
 	</div>
 	<div class="flex-1"></div>
 	<div class="flex items-center gap-2 px-3 text-muted">

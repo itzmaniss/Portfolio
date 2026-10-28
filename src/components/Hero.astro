@@ -18,10 +18,16 @@
 				aria-hidden="true"></span>
 		</p>
 
+		<!-- The h1 accessible name is "Manish Balasubramanian": the casing is
+		     CSS only, so no aria-hidden splitting. Both lines are sized in em
+		     off the same clamp, so they scale together and the 15-character
+		     surname never overflows its container. -->
 		<h1
-			class="animate-boot mt-6 text-[clamp(2.75rem,11vw,8.5rem)] font-semibold leading-[0.9] tracking-[-0.06em] text-text [animation-delay:120ms]"
+			aria-label="Manish Balasubramanian"
+			class="animate-boot mt-6 text-[clamp(2.75rem,11vw,8.5rem)] font-semibold uppercase leading-[0.9] tracking-[-0.06em] text-text [animation-delay:120ms]"
 		>
-			MANISH
+			<span class="block">Manish</span>
+			<span class="block text-[0.4em]">Balasubramanian</span>
 		</h1>
 
 		<div class="animate-boot mt-8 flex items-center gap-4 [animation-delay:240ms]">
@@ -34,7 +40,7 @@
 		<p
 			class="animate-boot mt-8 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg [animation-delay:340ms]"
 		>
-			I build the parts your users never see: APIs, bots, scrapers, and the scheduled jobs on permanent night shift, keeping everything running. Mostly in Python, TypeScript, and Go. Right now I'm the founding engineer at <a href="https://myridesg.com" target="_blank" rel="noopener noreferrer" class="text-text underline decoration-accent/60 underline-offset-4 transition-colors duration-200 hover:text-accent">MyRideSG</a>, building the app Singapore's riders run their bikes on.
+			I build the parts your users never see: APIs, bots, scrapers, and the scheduled jobs on permanent night shift, keeping everything running. Mostly in Python, TypeScript, and Go. Right now I'm a founding engineer at <a href="https://myridesg.com" target="_blank" rel="noopener noreferrer" class="text-text underline decoration-accent/60 underline-offset-4 transition-colors duration-200 hover:text-accent">MyRideSG</a>, where I build the partners app and the website for the app Singapore's riders run their bikes on.
 	</p>
 
 		<div

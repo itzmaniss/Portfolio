@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import Article from "../../layouts/Article.astro";
+
+export async function getStaticPaths() {
+	// Drafts are filtered here so they never become routes in production.
+	const posts = await getCollection(
+		"caseStudies",
+		({ data }) => !data.draft,
+	);
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+---
+
+<Article post={post} />

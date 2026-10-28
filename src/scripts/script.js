@@ -103,7 +103,9 @@
             current = active;
 
             navLinks.forEach((link) => {
-                const isActive = link.getAttribute("href") === "#" + active;
+                // Nav hrefs are root-absolute (/#about); match on the hash
+                // so the spy keeps working with the same markup.
+                const isActive = link.getAttribute("href") === "/#" + active;
                 if (isActive) {
                     link.setAttribute("aria-current", "true");
                 } else {

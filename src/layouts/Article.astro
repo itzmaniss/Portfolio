@@ -1,0 +1,170 @@
+---
+import Base from "./Base.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Statusline from "../components/Statusline.astro";
+import { render, type CollectionEntry } from "astro:content";
+
+interface Props {
+	post: CollectionEntry<"caseStudies">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const {
+	title,
+	description,
+	publishedAt,
+	updatedAt,
+	repo,
+	live,
+	stack,
+	role,
+} = post.data;
+
+// Canonical matches the served directory URL, not the source file path.
+const canonical = new URL(`/work/${post.id}/`, Astro.site).href;
+
+// Reading time from the raw body word count, ~200 wpm, minimum one minute.
+const words = (post.body ?? "").trim().split(/\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(words / 200));
+
+const dateFormat = new Intl.DateTimeFormat("en-GB", {
+	day: "2-digit",
+	month: "short",
+	year: "numeric",
+});
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "TechArticle",
+	headline: title,
+	description,
+	datePublished: publishedAt.toISOString(),
+	dateModified: (updatedAt ?? publishedAt).toISOString(),
+	author: {
+		"@type": "Person",
+		"@id": "https://itzmaniss.dev/#person",
+		name: "Manish Balasubramanian",
+		url: "https://itzmaniss.dev/",
+	},
+	mainEntityOfPage: canonical,
+	inLanguage: "en",
+};
+---
+
+<Base
+	title={`${title} | Manish Balasubramanian`}
+	description={description}
+	canonical={canonical}
+	ogType="article"
+>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+	</Fragment>
+	<Header />
+	<main id="main">
+		<article class="mx-auto max-w-3xl px-5 pb-24 pt-28 sm:px-8">
+			<p class="text-sm text-muted">
+				<a
+					href="/work/"
+					class="relative text-text transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-accent hover:after:scale-x-100"
+					>&larr; all case studies</a
+				>
+			</p>
+
+			<h1
+				class="mt-6 text-balance text-3xl font-semibold leading-tight tracking-tight text-text sm:text-4xl"
+			>
+				{title}
+			</h1>
+
+			<p class="mt-4 text-sm text-accent">
+				By Manish Balasubramanian
+			</p>
+			<p
+				class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted"
+			>
+				<time datetime={publishedAt.toISOString()}>
+					{dateFormat.format(publishedAt)}
+				</time>
+				{
+					updatedAt && (
+						<span>
+							updated {dateFormat.format(updatedAt)}
+						</span>
+					)
+				}
+				<span aria-hidden="true" class="text-dim">·</span>
+				<span>{role}</span>
+				<span aria-hidden="true" class="text-dim">·</span>
+				<span>{readingMinutes} min read</span>
+			</p>
+
+			<ul class="mt-6 flex flex-wrap gap-2">
+				{
+					stack.map((tech) => (
+						<li class="tech-chip text-xs">{tech}</li>
+					))
+				}
+			</ul>
+
+			{
+				(repo || live) && (
+					<div class="mt-6 flex flex-wrap gap-3">
+						{repo && (
+							<a
+								href={repo}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="border border-line px-4 py-2 text-xs text-text transition-colors duration-200 hover:border-accent hover:text-accent"
+							>
+								repo &rarr;
+							</a>
+						)}
+						{live && (
+							<a
+								href={live}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="border border-line px-4 py-2 text-xs text-text transition-colors duration-200 hover:border-accent hover:text-accent"
+							>
+								live site &rarr;
+							</a>
+						)}
+					</div>
+				)
+			}
+
+			<div class="prose mt-12 border-t border-line pt-10">
+				<Content />
+			</div>
+
+			<div
+				class="mt-16 border border-line bg-ink-2 p-6 sm:p-8"
+				data-reveal
+			>
+				<p class="cmd text-sm text-muted"><span class="text-text">open contact.md</span></p>
+				<p class="mt-4 text-lg font-medium text-text">
+					Need something like this built?
+				</p>
+				<p class="mt-2 text-sm text-muted">
+					I take on contract work: APIs, bots, and the automation that
+					holds them together.
+				</p>
+				<a
+					href="/#contact"
+					class="mt-6 inline-flex items-center gap-2.5 bg-accent px-6 py-3 text-sm font-semibold text-ink transition-all duration-200 hover:bg-accent-bright hover:shadow-[0_8px_24px_-10px_var(--color-accent)]"
+				>
+					Start a project
+					<span
+						class="transition-transform duration-200"
+						aria-hidden="true">&rarr;</span
+					>
+				</a>
+			</div>
+		</article>
+	</main>
+	<Footer />
+	<Statusline section={post.id} />
+</Base>

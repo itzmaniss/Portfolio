@@ -177,6 +177,114 @@
     .is-loading {
         @apply opacity-100;
     }
+
+    /* ── Article body (.prose) ─────────────────────────────────────────
+       Markdown case studies rendered into the terminal theme. Written by
+       hand instead of the typography plugin so every element maps onto
+       the site's own tokens; headings keep their Markdown hashes as a
+       quiet nod to the source format. Shiki paints the code tokens, the
+       block chrome here just re-skins its background to the site's. */
+    .prose {
+        @apply text-[0.95rem] leading-relaxed text-text;
+    }
+    .prose > :first-child {
+        margin-top: 0;
+    }
+    .prose p {
+        @apply mt-5;
+    }
+    .prose h2,
+    .prose h3 {
+        @apply font-semibold leading-snug tracking-tight text-text;
+        /* Anchored headings clear the fixed header. */
+        scroll-margin-top: 5.5rem;
+    }
+    .prose h2 {
+        @apply mt-12 text-xl sm:text-2xl;
+    }
+    .prose h3 {
+        @apply mt-10 text-base sm:text-lg;
+    }
+    .prose h2::before {
+        content: "## ";
+        color: var(--color-accent);
+    }
+    .prose h3::before {
+        content: "### ";
+        color: var(--color-accent);
+    }
+    /* Decorative: empty alt text keeps the hashes out of the headings'
+       accessible names ("## Why this exists" reads badly in a screen
+       reader). @supports guard so older engines fall back to the plain
+       declaration above rather than dropping the rule. */
+    @supports (content: "x" / "") {
+        .prose h2::before {
+            content: "## " / "";
+        }
+        .prose h3::before {
+            content: "### " / "";
+        }
+    }
+    .prose a {
+        @apply text-accent underline decoration-accent/40 underline-offset-4 transition-colors duration-200 hover:decoration-accent;
+    }
+    .prose ul {
+        @apply mt-5 list-disc space-y-2 pl-6 marker:text-dim;
+    }
+    .prose ol {
+        @apply mt-5 list-decimal space-y-2 pl-6 marker:text-dim;
+    }
+    .prose li p {
+        @apply mt-2;
+    }
+    .prose strong {
+        @apply font-semibold text-text;
+    }
+    /* Inline code only; fenced blocks are pre > code and styled below. */
+    .prose :not(pre) > code {
+        @apply border border-line bg-ink-2 px-1.5 py-0.5 text-[0.85em] text-accent;
+    }
+    .prose pre {
+        @apply mt-6 overflow-x-auto border border-line p-4 text-left text-[0.85rem] leading-relaxed;
+        /* Shiki sets its theme background inline; the site surface wins. */
+        background-color: var(--color-surface) !important;
+    }
+    .prose pre code {
+        @apply border-0 bg-transparent p-0 text-inherit;
+    }
+    /* Block display keeps wide tables scrollable instead of overflowing
+       the article column on phones. */
+    .prose table {
+        @apply mt-6 block w-full border-collapse text-sm;
+        overflow-x: auto;
+    }
+    .prose th,
+    .prose td {
+        @apply border border-line px-3 py-2 text-left align-top;
+    }
+    .prose th {
+        @apply bg-ink-2 font-medium text-text;
+    }
+    .prose td {
+        @apply text-muted;
+    }
+    /* No italics: the site loads no italic face, so they would render
+       synthetic. */
+    .prose blockquote {
+        @apply mt-6 border-l-2 border-accent pl-4 text-muted;
+    }
+    .prose blockquote p {
+        @apply mt-0;
+    }
+    .prose blockquote > * + * {
+        @apply mt-3;
+    }
+    .prose hr {
+        @apply mt-10 border-line;
+    }
+    .prose img {
+        @apply mt-6 border border-line;
+    }
 }
 
 /* Quality floor: honour reduced-motion requests globally, rather than

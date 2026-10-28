@@ -1,7 +1,21 @@
 ---
+import { getCollection, type CollectionEntry } from "astro:content";
 import ProjectCard from "./ProjectCard.astro";
 import SectionHeader from "./SectionHeader.astro";
 import { projects } from "../data/site";
+
+// Case studies shown under the project list: non-draft, newest first.
+const caseStudies: CollectionEntry<"caseStudies">[] = (
+	await getCollection("caseStudies", ({ data }) => !data.draft)
+).sort(
+	(a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
+
+const dateFormat = new Intl.DateTimeFormat("en-GB", {
+	day: "2-digit",
+	month: "short",
+	year: "numeric",
+});
 ---
 
 <section id="work" class="mx-auto max-w-6xl px-5 py-24 sm:px-8">
@@ -21,7 +35,7 @@ import { projects } from "../data/site";
 	</div>
 
 	<p class="mt-8 text-sm text-muted" data-reveal>
-		More on
+		More on{" "}
 		<a
 			href="https://github.com/itzmaniss"
 			target="_blank"
@@ -30,4 +44,51 @@ import { projects } from "../data/site";
 			>github.com/itzmaniss</a
 		>
 	</p>
+
+	{
+		caseStudies.length > 0 && (
+			<div class="mt-16" data-reveal>
+				<SectionHeader command="ls case-studies/" />
+				<ul class="mt-8 border-b border-line">
+					{caseStudies.map((post) => (
+						<li>
+							<a
+								href={`/work/${post.id}/`}
+								class="group flex flex-col gap-1.5 border-t border-line py-4 transition-colors duration-200 hover:text-accent sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+							>
+								<span class="text-sm text-text transition-colors duration-200 group-hover:text-accent">
+									{post.data.title}
+								</span>
+								<span class="flex items-baseline gap-4 text-xs text-dim">
+									<span class="whitespace-nowrap">
+										{post.data.project}
+									</span>
+									<time
+										class="whitespace-nowrap"
+										datetime={post.data.publishedAt.toISOString()}
+									>
+										{dateFormat.format(post.data.publishedAt)}
+									</time>
+									<span
+										class="text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent"
+										aria-hidden="true"
+									>
+										&rarr;
+									</span>
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+				<p class="mt-6 text-sm text-muted">
+					<a
+						href="/work/"
+						class="relative text-text transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-accent hover:after:scale-x-100"
+					>
+						Read the case studies &rarr;
+					</a>
+				</p>
+			</div>
+		)
+	}
 </section>

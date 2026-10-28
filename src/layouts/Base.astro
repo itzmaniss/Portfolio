@@ -14,9 +14,21 @@ import fontSemiBoldUrl from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin
 interface Props {
 	title: string;
 	description: string;
+	/** Absolute canonical URL. Defaults to the current pathname on the site. */
+	canonical?: string;
+	/** "article" on case study pages, "website" everywhere else. */
+	ogType?: "website" | "article";
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonical, ogType = "website" } = Astro.props;
+
+// Every page on the site is served directory-style (/work/slug/), which is
+// the form Cloudflare Pages answers 200 without a redirect, so the default
+// canonical pathname is normalized to that same trailing-slash form.
+const pathname = Astro.url.pathname.endsWith("/")
+	? Astro.url.pathname
+	: Astro.url.pathname + "/";
+const canonicalHref = canonical ?? new URL(pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -28,15 +40,14 @@ const { title, description } = Astro.props;
 		<meta name="description" content={description} />
 		<meta name="robots" content="index, follow" />
 		<meta name="theme-color" content="#0B0F0E" />
+		<link rel="canonical" href={canonicalHref} />
 
 		<!-- Open Graph -->
 		<meta property="og:title" content={title} />
-		<meta
-			property="og:description"
-			content="I build APIs, bots, and the automation that holds them together. Available for contract work."
-		/>
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://itzmaniss.dev" />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalHref} />
+		<meta property="og:site_name" content="itzmaniss.dev" />
 		<meta name="twitter:card" content="summary" />
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -56,6 +67,9 @@ const { title, description } = Astro.props;
 			crossorigin
 			href={fontSemiBoldUrl}
 		/>
+
+		<!-- Structured data and per-page head extras. -->
+		<slot name="head" />
 
 		<!-- Set before paint so reveal styles never flash. -->
 		<script is:inline>

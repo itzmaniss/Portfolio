@@ -9,12 +9,53 @@ import Services from "../components/Services.astro";
 import Stack from "../components/Stack.astro";
 import Statusline from "../components/Statusline.astro";
 import Work from "../components/Work.astro";
+
+// Person + WebSite structured data. The @id node is referenced by the
+// TechArticle blocks on each case study page, so it must stay stable.
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Person",
+			"@id": "https://itzmaniss.dev/#person",
+			name: "Manish Balasubramanian",
+			alternateName: "itzmaniss",
+			url: "https://itzmaniss.dev/",
+			jobTitle: "Software Engineer",
+			worksFor: {
+				"@type": "Organization",
+				name: "MyRideSG",
+				url: "https://myridesg.com",
+			},
+			homeLocation: {
+				"@type": "Place",
+				name: "Singapore",
+			},
+			sameAs: [
+				"https://linkedin.com/in/itzmaniss",
+				"https://github.com/itzmaniss",
+			],
+		},
+		{
+			"@type": "WebSite",
+			name: "itzmaniss.dev",
+			url: "https://itzmaniss.dev/",
+			author: { "@id": "https://itzmaniss.dev/#person" },
+		},
+	],
+};
 ---
 
 <Base
-	title="Manish | Backend & Automation Developer"
-	description="Founding engineer at MyRideSG and freelance backend and automation developer in Singapore. I build APIs, bots, scrapers and the services underneath them in Go, Python and TypeScript. Available for contract work."
+	title="Manish Balasubramanian (itzmaniss) | Software Engineer"
+	description="Manish Balasubramanian (itzmaniss) is a software engineer and computer science student in Singapore, founding engineer at MyRideSG. Available for contract work."
 >
+	<Fragment slot="head">
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify(jsonLd)}
+		/>
+	</Fragment>
 	<Header />
 	<main id="main">
 		<Hero />

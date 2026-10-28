@@ -1,0 +1,4 @@
+# Local secrets for `wrangler pages dev` (bun run preview).
+# Copy to .dev.vars and fill in. .dev.vars is gitignored; never commit it.
+# Use a fake value like re_fake when testing the failure path locally.
+RESEND_API_KEY=

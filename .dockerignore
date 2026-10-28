@@ -8,4 +8,12 @@ Dockerfile
 README.md
 .env
 .env.local
+.dev.vars
 .DS_Store
+
+# build output and local state the image doesn't need
+dist
+.astro
+.wrangler
+.claude
+.claude-flow

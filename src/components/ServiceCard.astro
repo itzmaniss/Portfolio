@@ -1,0 +1,29 @@
+---
+import type { Service } from "../data/site";
+
+interface Props {
+	service: Service;
+}
+
+const { service } = Astro.props;
+---
+
+<article
+	class="group border border-line bg-gradient-to-b from-ink-2 to-ink p-7 transition-all duration-300 hover:-translate-y-0.5 hover:border-line-bright hover:shadow-[0_12px_32px_-12px_rgb(0_0_0/0.7)]"
+	data-reveal
+>
+	<p class="text-sm text-accent">{service.prefix}</p>
+	<h3 class="mt-4 text-xl font-medium tracking-tight text-text">
+		{service.title}
+	</h3>
+	<p class="mt-3 text-sm leading-relaxed text-muted">
+		{service.description}
+	</p>
+	<ul class="mt-6 space-y-2 text-sm text-muted">
+		{service.items.map((item) => (
+			<li class="flex gap-2.5">
+				<span class="text-accent" aria-hidden="true">&rsaquo;</span>{item}
+			</li>
+		))}
+	</ul>
+</article>

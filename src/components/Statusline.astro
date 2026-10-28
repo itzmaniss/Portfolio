@@ -1,0 +1,25 @@
+<!-- tmux-style bar: session, current section (scroll-driven),
+     availability, and local time. -->
+<div
+	class="fixed inset-x-0 bottom-0 z-50 flex h-7 items-stretch border-t border-line bg-ink-2 text-[11px] tracking-wide"
+	aria-hidden="true"
+>
+	<div
+		class="hidden items-center gap-2 bg-accent px-3 font-semibold text-ink sm:flex"
+	>
+		manish@portfolio
+	</div>
+	<div class="flex items-center gap-2 px-3 text-muted">
+		<span class="text-subtle">buf</span>
+		<span id="status-section" class="text-text">hero</span>
+	</div>
+	<div class="flex-1"></div>
+	<div class="flex items-center gap-2 px-3 text-muted">
+		<span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+		<span class="text-text">available</span>
+	</div>
+	<div class="flex items-center gap-2 bg-surface px-3 text-muted tabular-nums">
+		<span class="text-subtle">SGT</span>
+		<span id="status-clock" class="text-text">--:--</span>
+	</div>
+</div>

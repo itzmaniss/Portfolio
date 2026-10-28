@@ -1,0 +1,97 @@
+<form
+	id="contact-form"
+	class="space-y-5 border border-line bg-ink-2 p-6 sm:p-8"
+	action="/api/contact"
+	method="post"
+>
+	<!-- Without JS this still POSTs somewhere sane instead of GETting the
+	     page; with JS, script.js submits it via fetch. Failure responses
+	     from the endpoint go into the empty div below, so a failed send
+	     replaces only that slot and everything the visitor typed stays in
+	     the form. -->
+	<div id="form-error"></div>
+
+	<div class="grid gap-5 sm:grid-cols-2">
+		<div>
+			<label for="name" class="form-label">Name</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				minlength="2"
+				maxlength="100"
+				autocomplete="name"
+				class="form-input"
+			/>
+		</div>
+		<div>
+			<label for="email" class="form-label">Email</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				maxlength="100"
+				autocomplete="email"
+				class="form-input"
+			/>
+		</div>
+	</div>
+
+	<div>
+		<label for="subject" class="form-label">Subject</label>
+		<input
+			type="text"
+			id="subject"
+			name="subject"
+			required
+			minlength="2"
+			maxlength="200"
+			class="form-input"
+		/>
+	</div>
+
+	<div>
+		<label for="message" class="form-label">What do you need built?</label>
+		<textarea
+			id="message"
+			name="message"
+			rows="5"
+			required
+			maxlength="2000"
+			class="form-input resize-none"></textarea>
+	</div>
+
+	<button
+		type="submit"
+		class="group flex w-full items-center justify-center gap-2.5 bg-accent px-6 py-3.5 text-sm font-semibold text-ink transition-all duration-200 hover:bg-accent-bright"
+	>
+		<span>Send message</span>
+		<span
+			class="transition-transform duration-200 group-hover:translate-x-1"
+			aria-hidden="true"
+			>&rarr;</span
+		>
+		<span id="form-indicator" class="form-indicator">
+			<svg
+				class="h-4 w-4 animate-spin"
+				viewBox="0 0 24 24"
+				fill="none"
+				aria-hidden="true"
+			>
+				<circle
+					class="opacity-25"
+					cx="12"
+					cy="12"
+					r="10"
+					stroke="currentColor"
+					stroke-width="4"></circle>
+				<path
+					class="opacity-75"
+					fill="currentColor"
+					d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+			</svg>
+		</span>
+	</button>
+</form>

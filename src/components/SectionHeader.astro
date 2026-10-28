@@ -1,0 +1,16 @@
+---
+interface Props {
+	command: string;
+}
+
+// The repeated shell-prompt header that opens every section.
+const { command } = Astro.props;
+---
+
+<div
+	class="cmd flex flex-wrap items-baseline gap-2 text-sm text-muted"
+	data-reveal
+>
+	<span class="text-text">{command}</span>
+	<span class="h-px flex-1 bg-line"></span>
+</div>

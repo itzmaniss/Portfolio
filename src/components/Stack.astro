@@ -1,0 +1,30 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import SkillChip from "./SkillChip.astro";
+import { skillGroups } from "../data/site";
+---
+
+<section
+	id="stack"
+	class="mx-auto max-w-6xl px-5 py-24 sm:px-8"
+	aria-labelledby="stack-heading"
+>
+	<h2 id="stack-heading" class="sr-only">Stack</h2>
+	<SectionHeader command="cat stack.txt" />
+
+	<div class="mt-12 space-y-10">
+		{skillGroups.map((group, index) => (
+			<div
+				class={`${index === 0 ? "" : "border-t border-line pt-10 "}grid gap-4 md:grid-cols-12 md:items-start`}
+				data-reveal
+			>
+				<h3 class="text-sm text-muted md:col-span-3">{group.name}</h3>
+				<div class="flex flex-wrap gap-2 md:col-span-9">
+					{group.skills.map((skill) => (
+						<SkillChip {...skill} />
+					))}
+				</div>
+			</div>
+		))}
+	</div>
+</section>

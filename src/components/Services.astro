@@ -1,0 +1,22 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import ServiceCard from "./ServiceCard.astro";
+import { services } from "../data/site";
+---
+
+<section id="services" class="mx-auto max-w-6xl px-5 py-24 sm:px-8">
+	<SectionHeader command="ls services/" />
+
+	<h2
+		class="mt-8 max-w-2xl text-balance text-3xl font-medium leading-tight tracking-tight text-text sm:text-4xl"
+		data-reveal
+	>
+		Three things I get hired for.
+	</h2>
+
+	<div class="mt-14 grid gap-5 md:grid-cols-3">
+		{services.map((service) => (
+			<ServiceCard service={service} />
+		))}
+	</div>
+</section>

@@ -1,0 +1,41 @@
+---
+// Skill icons are vendored into src/assets/devicons/ (files from the
+// devicon project, MIT licensed) and resolved at build time, so no icon
+// request leaves the origin at runtime.
+const icons = import.meta.glob("../assets/devicons/*.svg", {
+	eager: true,
+	query: "?url",
+	import: "default",
+}) as Record<string, string>;
+
+interface Props {
+	label: string;
+	/** File name in src/assets/devicons/. */
+	icon?: string;
+	invert?: boolean;
+}
+
+const { label, icon, invert } = Astro.props;
+
+const iconPath = icon ? `../assets/devicons/${icon}` : undefined;
+if (iconPath && !(iconPath in icons)) {
+	throw new Error(
+		`SkillChip: icon "${icon}" is missing from src/assets/devicons/. Add the SVG from the devicon project.`,
+	);
+}
+const iconUrl = iconPath ? icons[iconPath] : undefined;
+---
+
+<span class="tech-chip"
+	>{iconUrl && (
+		<img
+			src={iconUrl}
+			alt=""
+			width="16"
+			height="16"
+			loading="lazy"
+			decoding="async"
+			class={`h-4 w-4${invert ? " invert" : ""}`}
+		/>
+	)}{label}</span
+>

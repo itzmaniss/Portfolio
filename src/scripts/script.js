@@ -3,7 +3,7 @@
  *
  * Everything here is progressive enhancement — with JS off the page is
  * still fully readable and navigable, just without the reveals, the
- * active-section tracking, and the statusline.
+ * active-section tracking, the statusline, or the fetch contact form.
  */
 (function () {
     "use strict";
@@ -150,11 +150,65 @@
         setInterval(tick, 30000);
     }
 
+    /* ── Contact form: fetch submit, alert fragments into #form-error ── */
+    function initContactForm() {
+        const form = document.getElementById("contact-form");
+        if (!form) return;
+
+        const button = form.querySelector("button[type='submit']");
+        const indicator = form.querySelector(".form-indicator");
+        const errorSlot = document.getElementById("form-error");
+
+        // Client-side twin of the endpoint's alert fragment, for when the
+        // request never gets a response at all.
+        const NETWORK_ERROR_HTML =
+            '<div class="border border-red-800 bg-red-950/50 p-3 text-sm text-red-200" role="alert">' +
+            "The message didn't send. Check your connection and try again, " +
+            'or email contact@itzmaniss.dev directly.</div>';
+
+        const setLoading = (loading) => {
+            if (button) {
+                button.disabled = loading;
+                button.setAttribute("aria-busy", String(loading));
+            }
+            if (indicator) indicator.classList.toggle("is-loading", loading);
+        };
+
+        form.addEventListener("submit", async (event) => {
+            // Native constraint validation has already run by submit time.
+            event.preventDefault();
+            setLoading(true);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: { "X-Requested-With": "fetch" },
+                });
+                const html = await response.text();
+
+                if (response.ok) {
+                    // Success fragment replaces the whole form.
+                    form.outerHTML = html;
+                } else if (errorSlot) {
+                    // Failure fragment only fills the error slot, so the
+                    // visitor's input stays untouched.
+                    errorSlot.innerHTML = html;
+                }
+            } catch {
+                if (errorSlot) errorSlot.innerHTML = NETWORK_ERROR_HTML;
+            } finally {
+                setLoading(false);
+            }
+        });
+    }
+
     function init() {
         initMobileMenu();
         initReveal();
         initScrollSpy();
         initClock();
+        initContactForm();
     }
 
     if (document.readyState === "loading") {

@@ -1,0 +1,33 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+import SectionHeader from "./SectionHeader.astro";
+import { projects } from "../data/site";
+---
+
+<section id="work" class="mx-auto max-w-6xl px-5 py-24 sm:px-8">
+	<SectionHeader command="ls -la work/" />
+
+	<h2
+		class="mt-8 max-w-2xl text-balance text-3xl font-medium leading-tight tracking-tight text-text sm:text-4xl"
+		data-reveal
+	>
+		Selected projects.
+	</h2>
+
+	<div class="mt-14 border-b border-line" data-reveal>
+		{projects.map((project) => (
+			<ProjectCard project={project} />
+		))}
+	</div>
+
+	<p class="mt-8 text-sm text-muted" data-reveal>
+		More on
+		<a
+			href="https://github.com/itzmaniss"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="relative text-text transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-accent hover:after:scale-x-100"
+			>github.com/itzmaniss</a
+		>
+	</p>
+</section>

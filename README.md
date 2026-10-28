@@ -1,127 +1,125 @@
 # Manish's Portfolio Website
 
-A modern, terminal-inspired developer portfolio built with Elysia.js, HTMX, and Tailwind CSS.
+A terminal-inspired single-page developer portfolio. The page is built with
+Astro as a plain static site, styled with Tailwind CSS v4, and enhanced with
+a small vanilla JS script. Fonts and skill icons are self-hosted. The contact
+form runs as a Cloudflare Pages Function that sends email through the Resend
+API. The same built site is also self-hostable behind a small Bun server as
+a Docker backup.
 
-![Portfolio Preview](https://img.shields.io/badge/Portfolio-Live-brightgreen)
+## Stack
 
-## 🚀 Features
+- Astro (static output, no adapter) builds the page into `dist/`
+- Tailwind CSS v4 via `@tailwindcss/vite`; theme tokens live in
+  `src/styles/global.css`
+- IBM Plex Mono self-hosted via `@fontsource/ibm-plex-mono` (latin subset),
+  preloaded in `src/layouts/Base.astro`
+- Skill icons vendored into `src/assets/devicons/` from the
+  [devicon](https://github.com/devicons/devicon) project
+- Vanilla JS (`src/scripts/script.js`) handles the contact form fetch,
+  mobile menu, scroll reveal, scroll spy and the statusline
+- `functions/api/contact.ts` is a Cloudflare Pages Function that validates
+  the form and sends mail via the Resend REST API
+- `public/_headers` sets cache and security headers; Cloudflare Pages reads
+  it verbatim and `server.ts` applies the same rules, so both deploys match
+- `server.ts` is a small Bun server for self-hosting: it serves `dist/` and
+  routes `POST /api/contact` through the same function, so both deploys
+  share one handler
 
-- **Terminal-inspired UI** with neon accents and sleek design
-- **Responsive layout** that works on all device sizes
-- **HTMX-powered interactions** for a smooth user experience
-- **Contact form** with email integration via Resend API
-- **Project showcase** highlighting full-stack development skills
-- **Fast performance** using Bun and Elysia.js
-
-## 🛠️ Tech Stack
-
-- **[Bun](https://bun.sh/)** - JavaScript runtime & package manager
-- **[Elysia.js](https://elysiajs.com/)** - TypeScript framework for Bun
-- **[HTMX](https://htmx.org/)** - High-power tools for HTML
-- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[Resend](https://resend.com/)** - Email API for the contact form
-
-## 🧰 Project Structure
+## Project structure
 
 ```
 .
-├── public/
-│   ├── favicon.svg / favicon.png
-│   ├── input.css      # Tailwind SOURCE — edit this
-│   ├── styles.css     # build output — do not edit by hand
-│   └── script.js
-└── src/
-    ├── index.html
-    └── index.ts
+├── functions/
+│   └── api/contact.ts     # POST /api/contact (Pages Function, shared with server.ts)
+├── public/                # copied verbatim into dist/ (favicons, _headers)
+├── src/
+│   ├── assets/devicons/   # vendored skill icons, resolved by SkillChip
+│   ├── components/        # Header, Hero, About, Services, Work, Stack, Contact, ...
+│   ├── data/site.ts       # nav links, services, projects, skill chips
+│   ├── layouts/Base.astro # head, meta, font imports, bundled script
+│   ├── pages/index.astro  # the page, assembled from components
+│   ├── scripts/script.js  # mobile menu, scroll reveal, scroll spy, statusline, form
+│   └── styles/global.css  # Tailwind source: @theme tokens + custom CSS
+├── server.ts              # Bun server for the self-hosted Docker deploy
+├── astro.config.mjs
+└── Dockerfile
 ```
 
-> **`public/input.css` is the stylesheet you edit.** `public/styles.css` is
-> generated from it by `bun run build:css` and any manual change there is
-> overwritten on the next build. Tailwind v4 needs no `tailwind.config.js` —
-> theme tokens live in the `@theme` block inside `input.css`.
+## Development
 
-## 📌 Getting Started
+Requires Bun.
 
-### Prerequisites
+```bash
+bun install
+bun run dev        # astro dev, http://localhost:4321
+bun run build      # astro build, outputs dist/
+bun run check      # astro check (type-checks .astro and .ts, including functions/)
+```
 
-- [Bun](https://bun.sh/) installed on your machine
-- Resend API key for email functionality
+`src/styles/global.css` is the stylesheet you edit. There is no separate CSS
+build step; Tailwind v4 runs inside the Astro build and only generates the
+utilities actually used. Class lists in `functions/api/contact.ts` are
+scanned too, since the endpoint returns HTML fragments.
 
-### Installation
+### Contact form locally
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/itzmaniss/dev-porfolio.git
-   cd dev-porfolio
-   ```
+The form endpoint needs a Resend API key. For the Cloudflare-style local
+preview:
 
-2. Install dependencies
-   ```bash
-   bun install
-   ```
+```bash
+cp .dev.vars.example .dev.vars   # then put a key in it
+bun run preview                  # builds, then wrangler pages dev dist
+```
 
-3. Create a `.env` file in the root directory with your Resend API key
-   ```
-   RESEND_API_KEY=your_resend_api_key_here
-   ```
+`wrangler pages dev` serves `dist/` plus the function together on
+http://localhost:8788 and reads `.dev.vars`. Use a fake key if you only want
+to see the error path; a rejected key shows the failure alert instead of
+sending anything.
 
-4. Build the CSS (required — the server does not build it for you)
-   ```bash
-   bun run build:css
-   ```
+## Deploying
 
-5. Start the development server
-   ```bash
-   bun dev
-   ```
+### Cloudflare Pages (primary)
 
-   To rebuild CSS automatically while you work, run this alongside it:
-   ```bash
-   bun run watch:css
-   ```
+Connect the repo to a Pages project, or deploy with `wrangler`:
 
-## 📝 Features
+- Build command: `bun run build`
+- Build output directory: `dist`
+- `functions/` is picked up automatically; `POST /api/contact` just works
+- Set `RESEND_API_KEY` as an encrypted environment variable in the Pages
+  project settings (Production and Preview)
 
-### Home Page
-Showcases a modern, terminal-inspired design with a focus on developer identity.
+`bun run deploy` runs `wrangler pages deploy dist` if you deploy from the
+CLI instead of Git integration.
 
-### About Section
-Highlights personal information and experiences in a visually appealing terminal window.
+### Docker (self-hosted backup)
 
-### Projects Section
-Displays a collection of featured projects with technology stack badges and descriptions.
+```bash
+docker build -t portfolio .
+docker run -d --name portfolio -p 6969:6969 -e RESEND_API_KEY=re_xxx portfolio
+```
 
-### Skills Section
-Visualizes technical skills using Devicon library.
+The image builds the site, then runs `server.ts`, which serves `dist/` and
+the contact endpoint on port 6969 (override with `PORT`). The existing
+health check polls `/health`. Outside Docker, `bun run start` runs the same
+server.
 
-### Contact Form
-Allows visitors to send messages directly through the website, with server-side validation and error handling.
+## Editing content
 
-## 🔧 Customization
+- Nav links, service cards, projects and stack chips are data arrays in
+  `src/data/site.ts`; the components map over them.
+- Colors, fonts and custom animations are tokens in the `@theme` block of
+  `src/styles/global.css`. Changing `--color-accent` re-colors the site.
+- The contact form markup is `src/components/ContactForm.astro`. Its error
+  slot (`#form-error`) is where script.js puts the endpoint's failure
+  fragment, so a failed send keeps everything the visitor typed.
 
-### Theme
-Colours, fonts and custom animations are defined as tokens in the `@theme`
-block of `public/input.css`. Changing `--color-accent` there re-colours the
-whole site. Rebuild with `bun run build:css` after any change.
-
-### Adding Projects
-To add new projects, modify the projects section in `index.html` by duplicating the project box template.
-
-### Email Configuration
-The contact form sends emails using Resend API. You can modify the email template in the `index.ts` file.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgements
+## Credits
 
 - Design by [0xshuul](https://www.rakshi.xyz)
 - Icons by [Devicon](https://devicon.dev/)
 
-## 📞 Contact
-
-For any questions or suggestions, feel free to reach out:
+## Contact
 
 - GitHub: [itzmaniss](https://github.com/itzmaniss)
 - LinkedIn: [itzmaniss](https://linkedin.com/in/itzmaniss)

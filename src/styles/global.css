@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
-/* Tailwind v4 needs to be told where classes live. index.ts returns HTML
-   strings with utility classes in them, so it gets scanned too. */
-@source "../src/**/*.{html,ts}";
+/* Tailwind v4 needs to be told where classes live. Utility classes are also
+   composed inside the contact endpoint's response fragments, so the Pages
+   Function gets scanned as well. */
+@source "../**/*.astro";
+@source "../../functions/**/*.ts";
 
 /* ── Design tokens ─────────────────────────────────────────────────────
    These generate the utilities: bg-ink, text-accent, font-display, etc.
@@ -18,6 +20,10 @@
     --color-text: #c9d5d1;
     --color-muted: #6e827c;
     --color-dim: #4a5a55;
+    /* Statusline labels only: the darkest tint of dim that clears 4.5:1
+       on both bg-ink-2 and bg-surface (dim itself is ~2.5:1, muted fails
+       on surface). Global dim stays untouched. */
+    --color-subtle: #788480;
 
     --color-accent: #34d399;
     --color-accent-bright: #4ade9f;
@@ -162,14 +168,13 @@
         @apply w-full border border-line bg-ink px-3.5 py-2.5 text-sm text-text transition-colors duration-200 placeholder:text-dim focus:border-accent focus:bg-ink-2 focus:outline-none;
     }
 
-    /* htmx sets .htmx-request on the indicator target while in flight.
-       Kept at opacity 0 rather than display:none so the button doesn't
-       change width mid-submit. */
-    .htmx-indicator {
+    /* script.js toggles .is-loading on the form spinner while the fetch
+       is in flight. Kept at opacity 0 rather than display:none so the
+       button doesn't change width mid-submit. */
+    .form-indicator {
         @apply inline-flex opacity-0 transition-opacity duration-200;
     }
-    .htmx-request .htmx-indicator,
-    .htmx-request.htmx-indicator {
+    .is-loading {
         @apply opacity-100;
     }
 }

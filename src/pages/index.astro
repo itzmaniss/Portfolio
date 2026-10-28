@@ -1,0 +1,29 @@
+---
+import About from "../components/About.astro";
+import Base from "../layouts/Base.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Services from "../components/Services.astro";
+import Stack from "../components/Stack.astro";
+import Statusline from "../components/Statusline.astro";
+import Work from "../components/Work.astro";
+---
+
+<Base
+	title="Manish | Backend & Automation Developer"
+	description="Founding engineer at MyRideSG and freelance backend and automation developer in Singapore. I build APIs, bots, scrapers and the services underneath them in Go, Python and TypeScript. Available for contract work."
+>
+	<Header />
+	<main id="main">
+		<Hero />
+		<About />
+		<Services />
+		<Work />
+		<Stack />
+		<Contact />
+	</main>
+	<Footer />
+	<Statusline />
+</Base>

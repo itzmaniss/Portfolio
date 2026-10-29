@@ -1,10 +1,10 @@
 /**
  * Self-hosted entry point (Docker, or any box with Bun).
  *
- * Cloudflare Pages serves dist/ and the functions/ directory by itself;
- * this server mirrors that layout on a plain origin: it serves the built
- * site from dist/ and routes POST /api/contact through the very same
- * onRequestPost the Pages Function exports, so both deploys share one
+ * Cloudflare Workers serves dist/ directly and routes /api/contact through
+ * worker/index.ts; this server mirrors that layout on a plain origin: it
+ * serves the built site from dist/ and routes POST /api/contact through
+ * the very same onRequestPost the Worker calls, so both deploys share one
  * handler and one set of behaviour.
  *
  * Everything crosses the boundary as standard Request/Response objects,

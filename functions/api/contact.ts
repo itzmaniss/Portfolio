@@ -1,10 +1,10 @@
 /**
  * POST /api/contact.
  *
- * Runs as a Cloudflare Pages Function (functions/api/contact.ts is picked
- * up automatically on Pages) and is imported by server.ts for the Docker
- * self-host deploy. It therefore sticks to standard fetch/Request/
- * FormData/Response APIs with no Bun or Node specifics.
+ * Shared contact handler: imported by worker/index.ts for the Cloudflare
+ * Workers deploy and by server.ts for the Docker self-host deploy. It
+ * sticks to standard fetch/Request/FormData/Response APIs with no
+ * runtime-specific APIs, so both entry points behave identically.
  *
  * The fragments returned here carry Tailwind classes that appear nowhere
  * else, so src/styles/global.css scans this file for them.

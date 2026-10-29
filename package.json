@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "bun run build && wrangler pages dev dist",
+    "preview": "bun run build && wrangler dev",
     "start": "bun run server.ts",
     "check": "astro check",
-    "deploy": "wrangler pages deploy dist",
+    "deploy": "bun run build && wrangler deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

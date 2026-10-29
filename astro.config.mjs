@@ -3,11 +3,12 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
-// Plain static output, no adapter: hosting is Cloudflare Pages (dist/ plus
-// the functions/ directory), with the Bun server at server.ts serving the
-// same dist/ for the self-hosted Docker deploy.
+// Plain static output, no adapter: hosting is Cloudflare Workers static
+// assets (dist/ plus worker/index.ts for /api/contact), with the Bun
+// server at server.ts serving the same dist/ for the self-hosted Docker
+// deploy.
 //
-// URLs are directory-style (/work/myridesg/), which is what Pages serves
+// URLs are directory-style (/work/myridesg/), which Cloudflare serves
 // 200 without a redirect, so canonical tags are generated in that same
 // trailing-slash form. build.format "directory" is the default but is set
 // explicitly because the canonical scheme depends on it.

@@ -1,0 +1,15 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "portfolio",
+	"main": "worker/index.ts",
+	"compatibility_date": "2026-10-28",
+	"observability": {
+		"enabled": true
+	},
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS",
+		"run_worker_first": ["/api/*"],
+		"html_handling": "auto-trailing-slash"
+	}
+}
